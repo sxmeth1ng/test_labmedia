@@ -28,3 +28,9 @@ cd payment_visualization
 python -m venv venv
 source venv\Scripts\activate
 pip install -r requirements.txt
+```
+### 2. Запуск приложения
+```bash
+python manage.py migrate
+python manage.py runserver
+```
