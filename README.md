@@ -26,6 +26,5 @@
 git clone https://github.com/sxmeth1ng/test_labmedia
 cd payment_visualization
 python -m venv venv
-venv\Scripts\activate      # Windows
-source venv/bin/activate   # Linux/macOS
+source venv\Scripts\activate
 pip install -r requirements.txt
