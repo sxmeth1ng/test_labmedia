@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Панель платежей</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .chart-container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        button {
+            display: block;
+            margin: 15px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <canvas id="scatterChart"></canvas>
+        <canvas id="barChart" style="display: none;"></canvas>
+    </div>
+    <button id="toggleBtn">Показать гистограмму</button>
+
+    <script>
+        const scatterData = JSON.parse('{{ scatter_data_json|safe }}');
+        const barLabels = JSON.parse('{{ bar_labels_json|safe }}');
+        const barValues = JSON.parse('{{ bar_values_json|safe }}');
+
+        const scatterCtx = document.getElementById('scatterChart').getContext('2d');
+        const scatterChart = new Chart(scatterCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Сумма платежа от даты',
+                    data: scatterData,
+                    showLine: true,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: { display: true, text: 'Дата' },
+                        ticks: {
+                            callback: function(value) {
+                                return new Date(value).toLocaleDateString();
+                            }
+                        }
+                    },
+                    y: {
+                        title: { display: true, text: 'Сумма' }
+                    }
+                }
+            }
+        });
+
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: barLabels,
+                datasets: [{
+                    label: 'Сумма платежа',
+                    data: barValues,
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Сумма' }
+                    }
+                }
+            }
+        });
+
+        let isScatter = true;
+        document.getElementById('toggleBtn').addEventListener('click', function() {
+            if (isScatter) {
+                document.getElementById('scatterChart').style.display = 'none';
+                document.getElementById('barChart').style.display = 'block';
+                this.textContent = 'Показать график';
+            } else {
+                document.getElementById('scatterChart').style.display = 'block';
+                document.getElementById('barChart').style.display = 'none';
+                this.textContent = 'Показать гистограмму';
+            }
+            isScatter = !isScatter;
+        });
+    </script>
+</body>
+</html>
